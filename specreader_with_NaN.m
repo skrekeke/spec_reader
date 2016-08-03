@@ -9,7 +9,6 @@ function [all_scans, num_range, time_list, y_titlem, y_startm, y_endm] = specrea
 % 
 % by Olena Soroka 
 % July 2016
-
 %% Input
 file = 'D:\Data\ESRF 2016\MA-2866\Alignment_SixC.spec';
 num_range = int32(num_range);%later must make as input of specreader function 
