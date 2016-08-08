@@ -14,12 +14,12 @@ clear all
 % num_range = [301:369];
 
 % %3Ru70Y II
-num_range = [381:394];
-points = [101];
+% num_range = [381:394];
+% points = [101];
 
 %3Ru70Y III
-num_range = [400:731];
-points = [101, 55, 11];
+num_range = [438:469];
+points = [55];%, 55, 11];
 
 scan_type_in = 1;
                 % 'a2scan'   => 1
@@ -28,7 +28,7 @@ scan_type_in = 1;
                 % 'loopscan' => 4
 
 is_scan_sequential_numbering = false;
-is_time_axis = false;
+is_time_axis = true;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h2 on/off
 %f1 on/off
@@ -70,17 +70,17 @@ f1_ranges = [];
 heating_ranges = [];
 
 if exist('h2_on')
-    for i = length(h2_on):-1:1
+    for i = 1:length(h2_on)
         h2_ranges = [h2_ranges,[h2_on(i):h2_off(i)]];
     end
 end
 if exist('f1_on')
-    for i = length(f1_on):-1:1
+    for i = 1:length(f1_on)
         f1_ranges = [f1_ranges,f1_on(i):f1_off(i)];
     end
 end
 if exist('heating_on')
-    for i = length(heating_on):-1:1
+    for i = 1:length(heating_on)
         heating_ranges = [heating_ranges, heating_on(i):heating_off(i)];
     end
 end
@@ -89,7 +89,7 @@ if is_scan_sequential_numbering && is_time_axis
     is_scan_sequential_numbering = false;
 end
 
-[all_scans, n_scans_edited, time_list, y_titlem, y_startm, y_endm] = specreader_with_NaN( num_range, scan_type_in, points );
+[all_scans, n_scans_edited, time_list, ~, y_startm, y_endm] = specreader_with_NaN( num_range, scan_type_in, points );
 
 if is_scan_sequential_numbering
     n_scan_list = [n_scans_edited(1) :(n_scans_edited(1) + length(n_scans_edited) - 1)];
@@ -100,9 +100,9 @@ end
 angle_list = all_scans(:,1,1);
 intensity_2d = squeeze(all_scans(:,2,:)); % [time(scan number), angle]
 %% h2 and filament on/off functions, and heating on/off
-for i = length(num_range):-1:1
+for i = 1:length(num_range)
     if ~isempty(h2_ranges)
-        for j = length(h2_ranges):-1:1
+        for j = 1:length(h2_ranges)
             if num_range(i) == h2_ranges(j)
                 h2_bool(i,j) = true;
             else
@@ -113,7 +113,7 @@ for i = length(num_range):-1:1
         h2_bool(i) = false;
     end
     if ~isempty(f1_ranges)
-        for j = length(f1_ranges):-1:1
+        for j = 1:length(f1_ranges)
             if num_range(i) == f1_ranges(j)
                 f1_bool(i,j) = true;
             else
@@ -124,7 +124,7 @@ for i = length(num_range):-1:1
         f1_bool(i) = false;
     end
     if ~isempty(heating_ranges)
-        for j = length(heating_ranges):-1:1
+        for j = 1:length(heating_ranges)
             if num_range(i) == heating_ranges(j)
                 heating_bool(i,j) = true;
             else
@@ -156,30 +156,29 @@ s = sprintf('Chi, %c', char(176));% degree symbol %%%%% <---- TO CHANGE
 %% scan number or time plot
     
 if is_time_axis
-    x_list = time_list;
-    label = 'time, hours';
+    x_list = (time_list-time_list(1))*24*60;% relative time to the first measurement in minutes
+    label = 'time, min';
 else
     x_list = n_scan_list;
     label = 'scan number';
 end
-    figure('Position',[300 100 1100 680]);
+    figure;
     [X, Y] = meshgrid(x_list, angle_list);
-    main_plot = subplot(4,1,1);
+    main_plot = subplot(1,1,1);
     ms = surface(X,Y,intensity_2d);
 %     surf(n_scan_list, angle_list, intensity_2d,'edgeColor', 'None');
-    shading flat
+    shading interp
     colormap(jet(256))
 %     h = colorbar('northoutside');
 %     h.Label.String = 'I, a.u.';
     axis tight
     xlabel(label)
     ylabel(s)
-	title('3Ru70Y II. Intensity map')%%%%% <---- TO CHANGE
+	title('3nm Ru 70nm Y III')%%%%% <---- TO CHANGE
     view(0,90)
-    set(main_plot, 'TickDir', 'out', 'XLim', [x_list(1) x_list(end)], 'YLim', [y_startm y_endm]);
-if is_time_axis
-    datetick('x', 'hh','keepticks')
-end
+   set(main_plot, 'TickDir', 'out', 'XLim', [x_list(1) x_list(end)], 'YLim', [y_startm y_endm]);
+
+return
 if exist('h2_on')
     h2 = subplot(4,1,2);
     hold on

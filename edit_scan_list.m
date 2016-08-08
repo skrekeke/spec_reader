@@ -17,8 +17,8 @@ for i = 1:length(scan_info(:,3))
 end
 [M,I] = max(scan_info(:,3));
 y_title = scan_info(I,4);
-y_start = scan_info(I,5);
-y_end = scan_info(I,6);
+y_start = min(scan_info(:,5));
+y_end = max(scan_info(:,6));
 index_for_one_length = zeros(length(index_for_one_type),1);
 for j = 1:length(points)
     index_for_one_length = index_for_one_length | (scan_info(:,3) == points(j));

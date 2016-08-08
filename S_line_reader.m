@@ -41,17 +41,17 @@ if strfind(tline,'#S')%look for scan-number line
                      num_scan = int32(num_scan);
                      num_points = Inf;
                      type_scan = 3;
-                     y_title = 0;
-                     y_start = 0;
-                     y_end = 0;
+                     y_title = NaN;
+                     y_start = NaN;
+                     y_end = NaN;
                 case 'loopscan'
                      split_title = textscan(tline, '%*s %d %*s %d %f %*d', 'Delimiter',' ','MultipleDelimsAsOne',1);
                      [num_scan, num_points, time_per_point] = split_title{:};
                      num_scan = int32(num_scan);
                      type_scan = 4;
-                     y_title = 0;
-                     y_start = 0;
-                     y_end = 0;
+                     y_title = NaN;
+                     y_start = NaN;
+                     y_end = NaN;
                 otherwise
                     display('Error. Unknown scan type.')
             end
