@@ -13,13 +13,13 @@ clear all
 % %4Pd70Y I
 % num_range = [301:369];
 
-% %3Ru70Y II
-% num_range = [381:394];
-% points = [101];
+%3Ru70Y II
+num_range = [381:394];
+points = [101];
 
 %3Ru70Y III
-num_range = [438:469];
-points = [55];%, 55, 11];
+% num_range = [438:469];
+% points = [55];%, 55, 11];
 
 scan_type_in = 1;
                 % 'a2scan'   => 1
