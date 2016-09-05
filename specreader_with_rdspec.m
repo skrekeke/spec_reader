@@ -1,12 +1,12 @@
 
-function [a, T_ave, time, mask_length, gam, chi, del] = specreader_with_rdspec( num_range, points )
+function [a, T_ave, time, mask_length, gam, chi, del] = specreader_with_rdspec( Input )
 %import data of specified scan numbers to a struct array
 % 
 % by Olena Soroka 
 % July 2016
 %% Input
 file = 'D:\Data\ESRF 2016\MA-2866\Alignment_SixC.spec';
-num_range = int32(num_range);
+num_range = int32(Input.num_range);
 
 %% 
 for i= length(num_range):-1:1
@@ -15,28 +15,46 @@ end
 
 
 for i= length(num_range):-1:1% for N_i scan write mask of length, 
-    if sum(length(a(i).data) == points)
-        mask_length(i) = true;
+    if ~isempty(a(i).data)
+        if sum(length(a(i).data(:,1)) == Input.points)
+            mask_length(i) = true;
+        else
+            mask_length(i) = false; 
+        end
     else
-        mask_length(i) = false; 
+        mask_length(i) = false;
     end
     for k=1:length(a(i).head)% indexes of T_euro, filter, angles
         if strcmp(a(i).head{k} , 'T_euro')
-            t_euroI = k;
+            t_euroI = int16(k);
         end
         if strcmp(a(i).head{k}, 'transm')
-            transmI = k;
+            transmI = int16(k);
         end
         if strcmp(a(i).head{k}, 'Gamma')
-            gammaI = k;
+            gammaI = int32(k);
         end
         if strcmp(a(i).head{k}, 'Chi')
-            chiI = k;
+            chiI = int32(k);
         end
         if strcmp(a(i).head{k}, 'Delta')
-            deltaI = k;
+            deltaI = int32(k);
         end
     end
+
+    if ~isempty(a(i).data)
+        a(i).data(:,end) = a(i).data(:,end)./a(i).data(:,transmI); % normalize detector on filter
+
+        T_ave(i) = sum(a(i).data(:,t_euroI))/length(a(i).data(:,t_euroI)); % Temperature vs scan number
+    else
+        T_ave(i) = NaN;
+    end
+    
+    
+    
+    time(i) = datenum(datetime({a(i).time(3:end)}, 'InputFormat',' eee MMM dd HH:mm:ss yyyy')); %time vs scan number
+    
+          
     if exist('gammaI','var') %% gam, chi and del -- arrays of header index, 0 if doesnt exist
         gam(i) = gammaI;
     else
@@ -52,11 +70,7 @@ for i= length(num_range):-1:1% for N_i scan write mask of length,
     else
         del(i) = 0;
     end
-    
-    a(i).data(:,end) = a(i).data(:,end)./a(i).data(:,transmI); % normalize detector on filter
-
-    T_ave(i) = sum(a(i).data(:,t_euroI))/length(a(i).data); % Temperature vs scan number
-    time(i) = datenum(datetime({a(i).time(3:end)}, 'InputFormat',' eee MMM dd HH:mm:ss yyyy')); %time vs scan number
+    clear deltaI gammaI chiI
     
 end
 
