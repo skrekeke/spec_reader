@@ -74,7 +74,7 @@ for i= length(num_range):-1:1% for N_i scan write mask of length,
     
 end
 
-time = time(:,mask_length);
+
 del = del(:,mask_length);
 gam = gam(:,mask_length);
 chi = chi(:,mask_length);
