@@ -8,13 +8,15 @@ clear all
 %% INPUT
 % make sure that in num_range there are no scans of true type and length,
 % but in wrong range of angles
-
-is_time_axis = true;
-is_type_of_measurement = true; % TRUE - t2t scan, FALSE - del scan (in plane gixrd)
-is_Tplot = true;% temperature plot
-is_lines = true; % vertical lines to identify h2 on/off, f1 on/off, heating on/off
+Input.is_display = true;
+Input.is_display_locs_widths = true;
+Input.is_width_plot = true; % if you need simple t2t plot without width analysis, make width_plot false
+Input.is_time_axis = true;
+Input.is_type_of_measurement = true; % TRUE - t2t scan, FALSE - del scan (in plane gixrd)
+Input.is_Tplot = true;% temperature plot
+Input.is_lines = false; % vertical lines to identify h2 on/off, f1 on/off, heating on/off
 dataylabel = '2\theta, deg.';
-graph_title = '3nm Ru / 70nm Y';
+% graph_title = ' ';
 linewidth = 2; % width of vertical lines
 
 %FOR FIT
@@ -27,12 +29,13 @@ linewidth = 2; % width of vertical lines
 % Input.angles = 9.4:0.04:12.6;
 
 % %4Pd70Y I
-Input.num_range = [301:330];%transition
-Input.num_range = [313:330];% YH2 --> YH3
+% Input.num_range = [301:330];%transition
+% Input.num_range = [301, 305, 312, 323];%transition
+% Input.num_range = [313:330];% YH2 --> YH3
 % Input.num_range = [349:372];% heating
 % Input.points = [101,55];
-Input.points = [101,98];% YH2 --> YH3
-Input.angles = 9.4:0.08:13;
+% Input.points = [101,98];% YH2 --> YH3
+% Input.angles = 9.4:0.08:13;
 
 % %3Ru70Y II
 % Input.num_range = [381:394];
@@ -41,12 +44,13 @@ Input.angles = 9.4:0.08:13;
 
 % %3Ru70Y III
 % Input.num_range = [401:731];% all scans
-% Input.num_range = [401:469];% transition + 1st heating
+Input.num_range = [401:468];% transition + 1st heating
 % Input.num_range = [401:420];% transition Y ->  YH3
+% Input.num_range = [438:469];% 1st heating, YH3 -> YH2
 % Input.num_range = [414:430];% YH2 --> YH3 transition
-% % Input.num_range = [438:469];% heating
-% Input.points = [101];%, 55];%, 11];
-% Input.angles = 9.5:0.04:13.02;
+% Input.num_range = [401,415,468];
+Input.points = [101, 55];%, 11];
+Input.angles = 9.5:0.04:13.02;
 % Input.angles = 9.5:0.08:12.46;
 
 % %3Ru70La5B I
@@ -78,16 +82,16 @@ Input.angles = 9.4:0.08:13;
 % % Input.num_range = [1162:1182];
 % Input.points = [117];
 % Input.angles = 10.5:0.05:16.3;
-% is_type_of_measurement = false;
-% is_time_axis = false;
+% Input.is_type_of_measurement = false;
+% Input.is_time_axis = false;
 % incidence = 0:0.01:0.2;
 %
 % broad gid
-% Input.num_range = [1150, 1201, 1230];
-% Input.points = 501;
-% Input.angles = 9:0.062:40;
-% is_type_of_measurement = false;
-% is_time_axis = false;
+% Input.num_range = [1232];%, 1201, 1230];
+% Input.points = 301;
+% Input.angles = 4:0.086:30;
+% Input.is_type_of_measurement = false;
+% Input.is_time_axis = false;
 % Ru_peaks = [15.204, 16.640, 17.342, 22.615, 26.487, 29.464, 30.684, 31.844, 33.662, 35.105, 37.120];
 % % Y_peaks = [11.262, 12.422, 12.873, 16.798, 19.579, 21.873, 22.631, 23.256, 23.487, 24.996, 25.901, 27.499, 29.508, 30.1, 30.765, 31.951, 32.675, 33.453, 33.972, 34.242, 35.667];
 % Y_peaks = [11.262, 12.422, 12.873, 16.798, 19.579, 22.631, 23.256, 23.487, 24.996, 29.508, 30.1, 30.765 33.453, 33.972];
@@ -99,7 +103,7 @@ Input.angles = 9.4:0.08:13;
 % Input.points = [101];
 % Input.angles = 9.2:0.04:13.2;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %h2 on/off
 %f1 on/off
 %heating on/off
@@ -127,12 +131,12 @@ Input.angles = 9.4:0.08:13;
 % Input.f1_off = [389];
 
 %3Ru70Y III
-Input.h2_on = [401,470];
-Input.h2_off = [436, 731];
-Input.f1_on = [401, 480, 546, 681];
-Input.f1_off = [434, 522, 659, 731];
-Input.heating_on = [438 ,523,674];
-Input.heating_off = [469, 544, 679];
+% Input.h2_on = [401,470];
+% Input.h2_off = [436, 731];
+% Input.f1_on = [401, 480, 546, 681];
+% Input.f1_off = [434, 522, 659, 731];
+% Input.heating_on = [438 ,523,674];
+% Input.heating_off = [469, 544, 679];
 
 %3Ru70La5B I
 % Input.h2_on = [743, 773, 789];
@@ -150,13 +154,15 @@ Input.heating_off = [469, 544, 679];
 % Input.heating_on = [865, 919];
 % Input.heating_off = [885, 945];
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
 tic
 
 [a, T, time, mask_l, gam, chi, del] = specreader_with_rdspec( Input );
 
 toc
+
+
 
 
 %% simple plot
@@ -203,7 +209,7 @@ time_list = time(:,mask_l);
 num_range = Input.num_range(:,mask_l);% delete non-relevant scans
 is_wrong_scans = zeros(size(num_range));
 for i=length(num_range):-1:1
-    if (gam(i) && chi(i)) && is_type_of_measurement
+    if (gam(i) && chi(i)) && Input.is_type_of_measurement
         step = (a(i).data(end,gam(i)) - a(i).data(1,gam(i)))/(length(a(i).data(:,gam(i))) - 1);
         j = 1;
         k = length(Input.angles');
@@ -219,13 +225,13 @@ for i=length(num_range):-1:1
             end
         end
         interpInt(j:k,i) = interp1( a(i).data(:,gam(i)), a(i).data(:,end), Input.angles(j:k)', 'splin');
-    elseif del(i) && is_type_of_measurement % if not desired type of scans
+    elseif del(i) && Input.is_type_of_measurement % if not desired type of scans
        interpInt(:,i) = NaN;
        is_wrong_scans(i) = true;
     else
-        if del(i) && ~is_type_of_measurement
+        if del(i) && ~Input.is_type_of_measurement
             interpInt(:,i) = interp1( a(i).data(:,del(i)), a(i).data(:,end), Input.angles', 'splin');
-        elseif (gam(i) && chi(i)) && ~is_type_of_measurement % if not desired type of scans
+        elseif (gam(i) && chi(i)) && ~Input.is_type_of_measurement % if not desired type of scans
             interpInt(:,i) = NaN;
             is_wrong_scans(i) = true;
         else
@@ -236,13 +242,23 @@ for i=length(num_range):-1:1
     end
 end
 
+
 % interpInt = interpInt(:,~is_wrong_scans);
 % time_list = time_list(:, ~is_wrong_scans);
 % num_range = num_range(:, ~is_wrong_scans);
+
+%% save scan to .dat file
+%{
+angles = Input.angles';
+data = [angles, interpInt];
+save('D:\Data\ESRF 2016\MA-2866\scans_dat\scan1232_6Ru70YH2.asc','data' ,'-ascii')
+return
+%}
 %% integrating peak area
+%{
 for scan=length(a):-1:1
     
-    if (gam(scan) && chi(scan)) && is_type_of_measurement% if t2t scan
+    if (gam(scan) && chi(scan)) && Input.is_type_of_measurement% if t2t scan
         x = Input.angles';
     else
         display('Not t2t scan')
@@ -258,7 +274,10 @@ semilogy(x_list, area1./area2, '-o')
 xlabel('time, min')
 ylabel('I_{YH_3}/I_{YH_2}')
 title('Peak ratio during YH_2 to YH_3 transition, 4Pd70Y')
+
+%}
 %% vertical lines for H2, F1 and heating
+
 if isfield(Input, 'h2_on')
     for i=length(Input.h2_on):-1:1
         if Input.h2_on(i) < Input.num_range(1) || Input.h2_on(i) > Input.num_range(end)
@@ -334,6 +353,42 @@ if isfield(Input, 'heating_off')
     heating_off_time = (heating_off_time(~isnan(heating_off_time)) - time_list(1))*24*60; % delete NaN-values
 end
 
+%% simple 2Theta plot
+%{
+color = ['r', 'k', 'b', 'c'];
+
+figure
+hold on
+j = 1;
+for i = length(interpInt(1,:)):-1:1
+    plot(Input.angles', (interpInt(:, i)), '--o', 'Color', color(j) )
+    j = j + 1;
+    if j > 4
+        j = 1;
+    end
+end
+clear i j
+xlabel('2\theta, deg.');
+ylabel('I, counts')
+return
+%}
+%% Peak Widths and locations
+
+[ locations, widths, peaks ] = peak_extractor( Input, interpInt );
+if Input.is_time_axis && Input.is_display_locs_widths
+        x_list = (time_list-time_list(1))*24*60;% relative time to the first measurement in minutes
+        label = 'time, min';
+        figure
+        subplot(2, 1, 1)
+        plot(x_list, locations(:,1), 'ok', x_list, locations(:,2), 'ob', x_list, locations(:,3), 'or')
+        xlabel(label)
+        ylabel(dataylabel)
+        subplot(2, 1, 2)
+        plot(x_list, widths(:,1), 'ok', x_list, widths(:,2), 'ob', x_list, widths(:,3), 'or')
+        xlabel(label)
+        ylabel('FWHM, deg')
+end
+
 
 %% scan number or time plot
 
@@ -342,7 +397,7 @@ tlabel = sprintf('T, K');
 ymin = min(Input.angles);
 ymax = max(Input.angles);
     
-if is_time_axis
+if Input.is_time_axis
     display('Time plot')
     x_list = (time_list-time_list(1))*24*60;% relative time to the first measurement in minutes
     label = 'time, min';
@@ -353,22 +408,22 @@ else
 end
 figure;
 [X, Y] = meshgrid(x_list, Input.angles);
-if is_Tplot
+if Input.is_Tplot
     dataplot = subplot(4,1,[1,2,3]);
     data = contour(X,Y,log10(interpInt), 'LevelStep', 0.03);
     shading interp
     colormap(jet(256))
     h = colorbar('northoutside');
-    h.Label.String = 'I, 10^n';
+    h.Label.String = 'I, log scale';
     axis tight
     ylabel(dataylabel)
-    title(graph_title)
+%     title(graph_title)
     dataplot.XLim = dataplot.XLim + [-5, 5];
     dataplot.YLim = [ymin ymax];
     dataplot.YTick = [ ymin:0.5:ymax ];
     ax = gca;
     hold on
-    if is_lines% vertical identifiers of h2, f1 and heating on/off
+    if Input.is_lines% vertical identifiers of h2, f1 and heating on/off
     
         if exist('h2_on_time','var') && ~isempty(h2_on_time)
             for i=1:length(h2_on_time)
@@ -405,14 +460,14 @@ if is_Tplot
     tplot = subplot(4,1,4);
     plot(x_list, T, '--or')
     axis tight
-    tplot.YLim = [290 350];
-    tplot.YTick = [ 290 310 330 350 ];
+    tplot.YLim = [295 430];
+    tplot.YTick = [ 300 330 360 390 420];
     xlabel(label)
     ylabel(tlabel)
     tplot.XLim = tplot.XLim + [-5, 5];
     bx = gca;
     hold on
-    if is_lines% vertical identifiers of h2, f1 and heating on/off
+    if Input.is_lines% vertical identifiers of h2, f1 and heating on/off
     
         if exist('h2_on_time','var') && ~isempty(h2_on_time)
             for i=1:length(h2_on_time)
@@ -450,12 +505,12 @@ else
     shading interp
     colormap(jet(256))
     h = colorbar('northoutside');
-    h.Label.String = 'I, 10^n';
+    h.Label.String = 'I, log scale';
     axis tight
     xlabel(label)
     ylabel(dataylabel)
-    title(graph_title)
-    if is_lines% vertical identifiers of h2, f1 and heating on/off
+%     title(graph_title)
+    if Input.is_lines% vertical identifiers of h2, f1 and heating on/off
     
         if exist('h2_on_time','var') && ~isempty(h2_on_time)
             for i=1:length(h2_on_time)
@@ -496,7 +551,7 @@ end
 %     set(main_plot, 'TickDir', 'out')%, 'XLim', [x_list(1) x_list(end)], 'YLim', [y_startm y_endm]);
   
       
-
+%{
 l = line([40 40], [tplot.YLim(1) tplot.YLim(2)], 'Color', 'b', 'LineWidth', linewidth)
 plot(ax, l)
 %}
