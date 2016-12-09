@@ -1,24 +1,6 @@
- function [ locations, widths, pks, peaks ] = peak_extractor( Input, interpInt, is_Display )
-%PEAK_EXTRACTOR extracts peak locations and widths from data
-%   based on the 2nd derivative analysis
-%   data nxm array, where n - number of points in 1 scan, m - number of
-%   scans
+ function [ locations, widths, pks ] = peakspar_struct2array( peaks )
+% 
 
-
-for i = length(interpInt(1,:)):-1:1
-    if is_Display
-        figure
-        hold on
-        findpeaks(interpInt(:, i), Input.angles', 'MinPeakHeight', Input.bkgrd, 'Annotate', 'extents', 'WidthReference', 'halfheight');
-        xlabel('2\theta, deg.');
-        ylabel('I, counts')
-    end
-        [peaks(i).pks, peaks(i).locs, peaks(i).widths, peaks(i).proms] = findpeaks(interpInt(:, i),  Input.angles', 'MinPeakHeight', Input.bkgrd, 'Annotate', 'extents', 'WidthReference', 'halfheight');
-end
-
-
-
-%}
 for j = length(peaks):-1:1
     switch length(peaks(j).locs)
     case 1
